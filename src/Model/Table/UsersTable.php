@@ -46,6 +46,8 @@ class UsersTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
+
+
     public function validationDefault(Validator $validator)
     {
         $validator
@@ -56,7 +58,8 @@ class UsersTable extends Table
             ->scalar('username')
             ->maxLength('username', 12)
             ->requirePresence('username', 'create')
-            ->allowEmptyString('username', false);
+            ->allowEmptyString('username', false)
+            ->alphaNumeric('username');
 
         $validator
             ->scalar('password')
@@ -70,10 +73,19 @@ class UsersTable extends Table
             ->allowEmptyString('email', false);
 
         $validator
-            ->scalar('role')
+            ->integer('role')
             ->maxLength('role', 20)
             ->requirePresence('role', 'create')
             ->allowEmptyString('role', false);
+
+         $validator
+        ->notEmpty('password')
+        ->add('password', 'validFormat',[
+                'rule' => array('custom', '/^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[@#$!%&*?^]).{1,}$/i'),
+                'message' => 'Password must contain at least 1 uppercase, 1 lowercase, 1 digit and 1 special character'
+        ]);
+
+        //^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[@#$!%&*?]) 
 
         return $validator;
     }
@@ -92,4 +104,6 @@ class UsersTable extends Table
 
         return $rules;
     }
+
+   
 }
